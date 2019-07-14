@@ -1,0 +1,99 @@
+#!/bin/bash
+# install golang
+echo -e "\n${YELLOW}[!] install golang${NC}"
+sudo apt install golang
+cd && mkdir go
+echo 'export GOPATH=$HOME/go' >> ~/.profile
+echo 'PATH="$HOME/go/bin:$PATH"' >> ~/.profile
+source ~/.profile
+cd && cd $secret
+
+# install gobuster
+echo -e "\n${YELLOW}[!] install gobuster${NC}"
+go get github.com/OJ/gobuster
+cd && cd $secret
+
+# install bettercap
+echo -e "\n${YELLOW}[!] install bettercap${NC}"
+sudo apt install libpcap-dev libnetfilter-queue-dev
+wget https://github.com/bettercap/bettercap/releases/download/v2.17/bettercap_linux_arm7_2.17.zip
+unzip bettercap_linux_arm7_2.17.zip
+rm README.md 
+rm LICENSE.md
+cd && cd $secret
+
+# install aircrack-ng
+echo -e "\n${YELLOW}[!] install aircrack-ng${NC}"
+sudo apt install -y autoconf automake libtool
+sudo apt install -y libssl-dev libgcrypt20-dev libnl-3-dev libnl-genl-3-dev ethtool
+wget https://download.aircrack-ng.org/aircrack-ng-1.5.2.tar.gz
+echo "decompress aircrack-ng-1.2.tar.gz"
+tar -zxvf aircrack-ng-1.5.2.tar.gz
+rm aircrack-ng-1.5.2.tar.gz
+cd aircrack-ng-1.5.2
+./autogen.sh
+make
+sudo make install
+sudo airodump-ng-oui-update
+cd && cd $secret
+
+# instal mdk3
+echo -e "\n${YELLOW}[!] install mdk3${NC}"
+wget http://aspj.aircrack-ng.org/mdk3-v6.tar.bz2
+tar jxvf mdk3-v6.tar.bz2
+rm mdk3-v6.tar.bz2
+cd mdk3-v6
+make
+sudo make install
+cd && cd $secret
+
+# install pixie-dust
+echo -e "\n${YELLOW}[!] install pixie-dust${NC}"
+git clone https://github.com/wiire/pixiewps
+cd pixiewps*/
+cd src/
+make
+sudo make install
+cd && cd $secret
+
+# install reaver
+echo -e "\n${YELLOW}[!] install reaver${NC}"
+sudo apt-get -y install build-essential libpcap-dev sqlite3 libsqlite3-dev
+git clone https://github.com/t6x/reaver-wps-fork-t6x
+cd reaver-wps-fork-t6x*/
+cd src/
+./configure
+make
+sudo make install
+cd && cd $secret
+
+# install shc
+echo -e "\n${YELLOW}[!] install shc${NC}"
+git clone https://github.com/neurobin/shc
+cd shc
+./configure
+make
+sudo make install
+cd && cd $secret
+
+# install searchsploit
+echo -e "\n${YELLOW}[!] install searchsploit${NC}"
+sudo git clone https://github.com/offensive-security/exploitdb.git /opt/exploitdb
+sed 's|path_array+=(.*)|path_array+=("/opt/exploitdb")|g' /opt/exploitdb/.searchsploit_rc > ~/.searchsploit_rc
+sudo ln -sf /opt/exploitdb/searchsploit /usr/local/bin/searchsploit
+
+# disable service
+echo -e "\n${YELLOW}[!] disable services${NC}"
+sudo systemctl disable apache2
+sudo systemctl disable bluetooth
+sudo systemctl disable dnsmasq
+sudo systemctl disable mariadb
+sudo systemctl disable postgresql
+sudo systemctl disable tor
+
+# update updatedb
+echo -e "\n${YELLOW}[!] updatedb${NC}"
+sudo updatedb
+
+# need reboot
+echo -e "\n${GREEN}[>] Need reboot${NC}"
